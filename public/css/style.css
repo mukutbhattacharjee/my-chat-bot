@@ -1,0 +1,24 @@
+#username-form{
+    margin-top: 200px;
+}
+.chat-panel{
+    height: 462px;
+    max-height: 473px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.online-users{
+    height:560px;
+    max-height: 560px;
+}
+.users-list{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height:500px;
+}
+.online{
+    color: lawngreen;
+}
+.panel-custom{
+    border-color: black;
+}

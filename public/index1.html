@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chaaaaaaat !!!</title>
+</head>
+<body>
+
+    <ul id="messages"></ul>
+    <br>
+    <form action="">
+        <input type="text" id="message">
+        <button type="submit">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script>
+        var socket = io();
+        $('form').submit( e =>{
+             e.preventDefault();
+             socket.emit('chat-message',$('#message').val());
+             $('#message').val('');
+        })
+
+        socket.on('chat-message', (message) => {
+            $('#messages').append($('<li>').text(message));
+        });
+    </script>
+</body>
+</html>

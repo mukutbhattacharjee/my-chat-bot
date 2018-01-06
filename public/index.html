@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chaaaaaaat !!!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- home screen -->
+    <div id="home" class="container text-center">
+        <form id="username-form" action="">
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-3">
+                    <input type="text" class="form-control" id="username" autofocus required placeholder="Enter an username">
+                    <br>
+                    <button type="submit" class="btn btn-primary">Start Chatting</button>
+                </div>
+            </div>
+        </form>
+        <br>
+        <p id="username-error" class="text-danger">Username not available</p>
+    </div>
+
+    <!-- chat-screen -->
+    <div id="chat" class="container text-center">
+        <div class="container">
+            <div class="container-fluid">
+                <h1 class="text-center text-info">Lets Chat</h1>
+                <br><br>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="panel panel-info panel-custom">
+                            <div class="panel-heading">Chat box</div>
+                            <div id="chat-box-content" class="panel-body chat-panel"></div>
+                            <div class="panel-footer">
+                                <form id="chat-form" action="">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="message-input" autofocus required placeholder="Enter your message">
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn  btn-block btn-primary">Send</button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-info panel-custom online-users">
+                                <div class="panel-heading">Users Online</div>
+                                <div class="panel-body"><div class="users-list" id="users-list"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- -SCRIPTS- -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- include bootstrap and jquery-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- Application Script-->
+    <script>
+        var socket = io();
+        $('#home').show();
+        $('#username-error').hide();
+        $('#chat').hide();
+
+        /**
+         * submit user name 
+         **/
+        $('#username-form').submit(event => {
+            event.preventDefault();
+            var username = $('#username').val();
+            socket.emit('new-user', username, (status) => {
+                if (status) {
+                    $('#home').hide();
+                    $('#username').val('')
+                    document.title = username;
+                    $('#chat').show();
+                } else {
+                    console.error("username not available");
+                    $('#username-error').show();
+                    $('#username').val('');
+                }
+            })
+        })
+        /**
+         * function to update online users list
+         **/
+        socket.on('users-list', (data) => {
+            $('#users-list').empty();
+            data.forEach(element => {
+                $('#users-list').append('</br><div class= "pull-left"> <i class="fa fa-circle online" aria-hidden="true"></i>&nbsp;&nbsp;'+element+'</div>')
+            });
+        })
+
+        /**
+         * Handle send message on send button press
+         * 
+         * */
+        $('#chat-form').submit(event=>{
+            event.preventDefault();
+            var message = $('#message-input').val();
+            console.log(">>>>>"+message);
+            socket.emit('new-message',message, (data)=>{
+                    console.log(data);
+            });
+            $('#message-input').val('')
+        });
+
+        /**
+         * Handle server broadcast of a new message
+         * 
+         **/
+        socket.on('chat-message', (msgData) => {
+            if(msgData.sender === document.title){
+                $('#chat-box-content').append('<div class="alert alert-success" align="right"> <strong>You</strong> : '+msgData.msg+ '</div>');
+            }else{
+                $('#chat-box-content').append('<div class="alert alert-info" align="left"> <strong>'+msgData.sender+'</strong> : '+msgData.msg+ '</div>')
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
