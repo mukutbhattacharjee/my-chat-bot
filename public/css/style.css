@@ -6,6 +6,7 @@
     max-height: 473px;
     overflow-y: scroll;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 .online-users{
     height:560px;

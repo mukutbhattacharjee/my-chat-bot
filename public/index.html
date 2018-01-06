@@ -90,7 +90,7 @@
                     document.title = username;
                     $('#chat').show();
                 } else {
-                    console.error("username not available");
+                    //console.error("username not available");
                     $('#username-error').show();
                     $('#username').val('');
                 }
@@ -113,7 +113,7 @@
         $('#chat-form').submit(event=>{
             event.preventDefault();
             var message = $('#message-input').val();
-            console.log(">>>>>"+message);
+            //console.log(">>>>>"+message);
             socket.emit('new-message',message, (data)=>{
                     console.log(data);
             });
@@ -130,6 +130,9 @@
             }else{
                 $('#chat-box-content').append('<div class="alert alert-info" align="left"> <strong>'+msgData.sender+'</strong> : '+msgData.msg+ '</div>')
             }
+            //auto scroll to bottom
+            var height = $('#chat-box-content')[0].scrollHeight;
+            $('#chat-box-content').scrollTop(height);  
         });
 
 
