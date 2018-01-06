@@ -42,7 +42,7 @@ io.on('connection', (socket)=>{ //socket instance representing one connection, f
         //console.log("new message arrived %s from %s",message,socket.username);
         //will broadcast this message to all clients
         var msgData = {msg:message,sender:socket.username}
-        console.log('emitting chat-message with data '+msgData)
+        //console.log('emitting chat-message with data '+msgData)
         io.emit('chat-message',msgData);
     });
 });
